@@ -5,7 +5,7 @@ Uses Flutter Notifications to bubble up `isLoading` events. Good for showing a l
 
 ## Crash course
 
-Wrap `LoadingImage` or `LoadingFutureBuilder` with a `LoadingNotificationListener`. When all of it's children are done loading, it will fire the `onLoaded` callback.
+Wrap multiple `LoadingImage` and/or `LoadingFutureBuilder` with a `LoadingNotificationListener`. When all of it's children are done loading, it will fire the `onLoaded` callback.
 
 PRO TIP: You can create loading groups by nesting `LoadingNotificationListeners`. If you leave the `onLoaded` callback empty, it will bubble the event to it's ancestors.
 
