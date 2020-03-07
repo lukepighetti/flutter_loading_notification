@@ -1,6 +1,13 @@
 # loading_notification
 
-Uses Flutter Notifications to bubble up `isLoading` events. Good for showing a loading screen until all the containing Image / FutureBuilder widgets inside it have completed.
+Uses Flutter Notifications to bubble up `isLoading` events. Good for showing a loading screen until all the containing Image / FutureBuilder widgets inside it have completed. 
+
+
+## Crash course
+
+Wrap `LoadingImage` or `LoadingFutureBuilder` with a `LoadingNotificationListener`. When all of it's children are done loading, it will fire the `onLoaded` callback.
+
+PRO TIP: You can create loading groups by nesting `LoadingNotificationListeners`. If you leave the `onLoaded` callback empty, it will bubble the event to it's ancestors.
 
 ```dart
 LoadingNotificationListener(
