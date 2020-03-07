@@ -1,7 +1,5 @@
 library loading_notification;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/loading_future_builder.dart';
+export 'src/loading_image.dart';
+export 'src/loading_notification_listener.dart';

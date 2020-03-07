@@ -1,113 +1,105 @@
 import 'package:flutter/material.dart';
+import 'package:loading_notification/loading_notification.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(LoadingNotificationsExample());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class LoadingNotificationsExample extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  _LoadingNotificationsExampleState createState() =>
+      _LoadingNotificationsExampleState();
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class _LoadingNotificationsExampleState
+    extends State<LoadingNotificationsExample> {
+  final _groupOne = {
+    "1000": Duration(milliseconds: 1000),
+    "1250": Duration(milliseconds: 1250),
+    "1500": Duration(milliseconds: 1500),
+    "1750": Duration(milliseconds: 1750),
+  };
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  bool _isLoading = true;
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+  void _handleLoaded() {
+    print("Loaded!");
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.grey,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("loading_notification"),
+        ),
+        body: Center(
+          child: LoadingNotificationListener(
+            onLoaded: _handleLoaded,
+            child: Column(
+              children: [
+                Text(_isLoading ? "All still loading..." : "All done!"),
+                SizedBox(height: 16),
+
+                /// Group One
+                LoadingNotificationListener(
+                  key: Key("Group 1"),
+                  child: Column(
+                    children: <Widget>[
+                      Text("FutureBuilders"),
+                      ..._groupOne.entries.map<Widget>((e) {
+                        return LoadingFutureBuilder<String>(
+                          key: Key(e.key),
+                          future: Future<String>.delayed(e.value)
+                              .then((_) => e.key),
+                          initialData: "Loading...",
+                          builder: (context, snap) {
+                            return Text(snap.data ?? "Wat");
+                          },
+                        );
+                      })
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 32),
+
+                /// Images
+                LoadingNotificationListener(
+                  key: Key("Images"),
+                  child: Column(
+                    children: <Widget>[
+                      Text("Images"),
+                      LoadingImage(
+                        key: Key("Image 1"),
+                        width: 100,
+                        height: 100,
+                        image: NetworkImage(
+                          "https://upload.wikimedia.org/wikipedia/commons/4/4e/Pleiades_large.jpg",
+                        ),
+                      ),
+                      LoadingImage(
+                        key: Key("Image 2"),
+                        width: 100,
+                        height: 100,
+                        image: NetworkImage(
+                          "https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
