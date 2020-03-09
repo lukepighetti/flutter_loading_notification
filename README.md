@@ -11,22 +11,20 @@ PRO TIP: You can create loading groups by nesting `LoadingNotificationListeners`
 
 ```dart
 LoadingNotificationListener(
-  key: Key("Images"),
   onLoaded: _handleLoaded,
   child: Column(
     children: <Widget>[
-      Text("Images"),
       LoadingFutureBuilder<String>(
-        key: Key("Future A"),
+        key: Key("Future"),
         future: Future<String>.delayed(Duration(seconds: 1))
             .then((_) => "Loaded!"),
         initialData: "Loading...",
         builder: (context, snap) {
-          return Text(snap.data ?? "Wat");
+          return Text(snap.data);
         },
       ),
       LoadingImage(
-        key: Key("Image A"),
+        key: Key("Image"),
         width: 100,
         height: 100,
         image: NetworkImage(
